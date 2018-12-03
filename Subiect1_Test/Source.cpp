@@ -73,7 +73,7 @@ public:
 	Avion *head;
 	void adaugare(Avion *a);
 	void afisare();
-	//void afisare_ord();
+	void stergere(char *nume);
 };
 void Lista::adaugare(Avion *a)
 {
@@ -85,7 +85,7 @@ void Lista::adaugare(Avion *a)
 	}
 	else
 	{
-		while (p->urm != NULL)
+		while (p->urm != NULL && p->tip==1) //atentie aici tip
 			p = p->urm;
 		p->urm = a;
 	}
@@ -139,40 +139,37 @@ void Lista::afisare()
 	}
 
 }
-/*void Lista::afisare_ord()
+void Lista::stergere(char *nume)
 {
-	cout << "===========\nAfisare Ordonata\n===========\n";
-	int t;
-	cout << "0.Locuri\n 1.Raza actiune\n";
-	cout << "Optiune afisare: ";
-	cin >> t;
-	Avion *p,*q,*aux;
-	
-	bool ok;
-	do {
-		ok = 1;
-		for(p=head;p->urm!=NULL;p=p->urm)
+	Avion *p,*aux;
+	p = head;
+	if (strcmp(head->nume, nume) == 0)
+	{
+		aux = head;
+		head = head->urm;
+		free(aux);
+	}
+	else
+	while (p->urm != NULL)
+	{
+		if (strcmp(p->urm->nume, nume) == 0)
 		{
-			for (q = p->urm; q->urm->urm != NULL; q = q->urm)
-			{
-				if (p->tip == t && q->tip == t)
-				{
-
-				}
-			}
+			aux = p->urm;
+			p->urm = p->urm->urm;
+			free(aux);
 		}
-	} while (ok != 1);
-}*/
+	}
+}
 int main()
 {
 	int opt;
 	Lista l;
 	l.head = NULL;
-	cout << "=============\n1.Introducere\n2.Afisare dupa categorie\n5.Exit\n=============\n";
+	cout << "=============\n1.Introducere\n2.Afisare dupa categorie\n3.Sterge\n5.Exit\n=============\n";
 	do {
 		cout << "Optiune Meniu: ";
 		cin >> opt;
-		switch (opt) 
+		switch (opt)
 		{
 		default:
 		{
@@ -190,6 +187,13 @@ int main()
 		{
 			l.afisare();
 			break;
+		}
+		case 3:
+		{
+			char nume[30];
+			cout << "Introdu nume: ";
+			cin >> nume;
+			l.stergere(nume);
 		}
 		}
 	} while (opt != 5);
