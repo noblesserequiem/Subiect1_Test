@@ -85,7 +85,7 @@ void Lista::adaugare(Avion *a)
 	}
 	else
 	{
-		while (p->urm != NULL && ()
+		while (p->urm != NULL)
 			p = p->urm;
 		p->urm = a;
 	}
