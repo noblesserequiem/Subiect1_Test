@@ -10,8 +10,10 @@ class Avion
 private:
 	int tip;
 	char *nume, *culoare;
+	
 	Avion *urm;
 public:
+	float rent;
 	Avion(char *n, char *cul,int t)
 	{
 		nume = new char(sizeof(strlen(n) + 1));
@@ -19,14 +21,17 @@ public:
 		strcpy(nume, n);
 		strcpy(culoare, cul);
 		tip = t;
+		
 	}
 	virtual void afisare()
 	{
 		cout << "------------------\n";
 		cout << "Nume: " << nume << endl;
 		cout << "Culoare: " << culoare << endl;
+		
 	}
 	friend class Lista;
+	
 
 };
 
@@ -34,19 +39,24 @@ class Pasageri :public Avion
 {
 private:
 	int nr_loc, autonomie;
+	
 public:
+	
 	Pasageri(char *n,char *cul,int t, int n_l, int aut) :Avion(n, cul,t)   //atentia la *?
 	{
 		nr_loc = n_l;
 		autonomie = aut;
+		Avion::rent = ((float)nr_loc+(float)autonomie)/100;
 	}
 	void afisare()
 	{
 		Avion::afisare();
 		cout << "Numar locuri: " << nr_loc << endl;
 		cout << "Autonomie: " << autonomie << endl;
+		
 	}
-	friend class Lista;
+	
+	
 };
 
 class Lupta :public Avion
@@ -74,6 +84,8 @@ public:
 	void adaugare(Avion *a);
 	void afisare();
 	void stergere(char *nume);
+	void afisare_rentabilitate();
+	
 };
 void Lista::adaugare(Avion *a)
 {
@@ -160,12 +172,35 @@ void Lista::stergere(char *nume)
 		}
 	}
 }
+void Lista::afisare_rentabilitate()
+{
+	Avion *p;
+	p = head;
+	float rentmax=0;
+	while (p!= NULL)
+	{
+		if (rentmax < p->rent)
+			rentmax = p->rent;
+		p = p->urm;
+	}
+	p = head;
+	while (p != NULL)
+	{
+		if (rentmax == p->rent)
+		{
+			cout << "Cel mai rentabil avion!"<<endl;
+			p->afisare();
+		}
+		p = p->urm;
+	}
+		
+}
 int main()
 {
 	int opt;
 	Lista l;
 	l.head = NULL;
-	cout << "=============\n1.Introducere\n2.Afisare dupa categorie\n3.Sterge\n5.Exit\n=============\n";
+	cout << "=============\n1.Introducere\n2.Afisare dupa categorie\n3.Sterge\n4.Cel mai rentabil avion\n5.Exit\n=============\n";
 	do {
 		cout << "Optiune Meniu: ";
 		cin >> opt;
@@ -194,6 +229,12 @@ int main()
 			cout << "Introdu nume: ";
 			cin >> nume;
 			l.stergere(nume);
+			break;
+		}
+		case 4:
+		{
+			l.afisare_rentabilitate();
+			break;
 		}
 		}
 	} while (opt != 5);
